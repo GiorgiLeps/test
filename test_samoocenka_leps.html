@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .results {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Психологический тест: "УРОВЕНЬ САМООЦЕНКИ"</h1>
+    <h>Этот тест поможет вам понять, насколько ваша самооценка сбалансирована
+и определить зоны, над которыми стоит поработать для вашего внутреннего благополучия.</h>
+    <h>Ответьте на вопросы максимально честно. Выберите вариант, который больше всего соответствует вашему ощущению:</h>    
+<form id="test-form">
+        <div id="questions-container"></div>
+        <button type="button" onclick="calculateResults()">Показать результаты</button>
+    </form>
+    <div class="results" id="results"></div>
+
+    <script>
+        const questions = [
+            "Я чувствую, что достоин уважения и признания, независимо от своих достижений.",
+            "Я спокойно принимаю комплименты и похвалу от других людей.",
+            "Когда что-то идет не так, я не виню себя и не занижаю свою значимость.",
+            "Я могу говорить НЕТ без чувства вины или страха обидеть.",
+            "Я уверенно принимаю решения и не боюсь ошибок.",
+            "Мне не нужно одобрение других людей, чтобы чувствовать себя ценным.",
+            "Я нахожу в себе силы двигаться вперед, даже если сталкиваюсь с критикой.",
+            "Я фокусируюсь на своих сильных сторонах, а не только на недостатках.",
+            "Я легко устанавливаю границы в отношениях и на работе.",
+            "Я чувствую себя комфортно в окружении успешных или уверенных людей."
+        ];
+
+        const options = [
+            "совсем не про меня",
+            "иногда про меня",
+            "часто про меня",
+            "всегда про меня"
+        ];
+
+        function createQuestions() {
+            const container = document.getElementById('questions-container');
+
+            questions.forEach((question, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+
+                const questionText = document.createElement('p');
+                questionText.textContent = question;
+                questionDiv.appendChild(questionText);
+
+                options.forEach((option, i) => {
+                    const label = document.createElement('label');
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = `question-${index}`;
+                    input.value = i + 1;
+
+                    label.appendChild(input);
+                    label.appendChild(document.createTextNode(option));
+
+                    questionDiv.appendChild(label);
+                    questionDiv.appendChild(document.createElement('br'));
+                });
+
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function calculateResults() {
+            const form = document.getElementById('test-form');
+            const formData = new FormData(form);
+
+            let totalScore = 0;
+            let unanswered = false;
+
+            questions.forEach((_, index) => {
+                const answer = formData.get(`question-${index}`);
+                if (answer) {
+                    totalScore += parseInt(answer);
+                } else {
+                    unanswered = true;
+                }
+            });
+
+            const resultsDiv = document.getElementById('results');
+            if (unanswered) {
+                resultsDiv.textContent = "Пожалуйста, ответьте на все вопросы.";
+                resultsDiv.style.color = "red";
+            } else {
+                resultsDiv.style.color = "black";
+                let resultText = "";
+
+                if (totalScore <= 20) {
+                    resultText = "Ваша самооценка может быть заниженной. Возможно, вы часто сомневаетесь в себе и ищете одобрения извне. Подумайте о том, чтобы начать с практики позитивных аффирмаций и работы с внутренним критиком.";
+                } else if (totalScore <= 30) {
+                    resultText = "У вас сбалансированная, но нестабильная самооценка. Иногда вы уверены в себе, но внешние обстоятельства могут выбивать вас из равновесия. Работайте над развитием внутренней устойчивости.";
+                } else {
+                    resultText = "У вас здоровая и уверенная самооценка. Вы знаете себе цену, спокойно реагируете на трудности и принимаете себя таким, какой вы есть. Продолжайте укреплять это состояние!";
+                }
+
+                resultsDiv.textContent = resultText;
+            }
+        }
+
+        createQuestions();
+    </script>
+</body>
+</html>
